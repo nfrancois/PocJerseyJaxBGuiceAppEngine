@@ -1,5 +1,7 @@
 package nfrancois.poc.jerseyjaxbguiceappengine;
 
+import javax.ws.rs.core.MediaType;
+
 import nfrancois.poc.jerseyjaxbguiceappengine.model.Hello;
 
 import static org.fest.assertions.Assertions.*;
@@ -29,6 +31,7 @@ public class HelloResourceTest extends JerseyTest {
 		WebResource path = resource().path(relativeUrl).path(name);
 		assertThat(path.getURI().toString()).isEqualTo(getFullUrl(relativeUrl, name));
 		int status = path.getRequestBuilder().head().getStatus();
+		assertThat(path.getRequestBuilder().head().getType()).isEqualTo(MediaType.APPLICATION_XML_TYPE);
 		assertThat(status).isEqualTo(Status.OK.getStatusCode());
 		Hello response = path.get(Hello.class);
 		assertThat(response).isNotNull();
