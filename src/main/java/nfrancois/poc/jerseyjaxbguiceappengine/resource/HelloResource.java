@@ -26,4 +26,8 @@ public class HelloResource {
 		return helloService.saysHelloToSomeone(name);
 	}
 	
+	public void setHelloService(HelloService helloService) {
+		this.helloService = helloService;
+	}
+	
 }
