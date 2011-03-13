@@ -2,6 +2,7 @@ package nfrancois.poc.jerseyjaxbguiceappengine;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import javax.ws.rs.core.MediaType;
@@ -20,7 +21,6 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.ClientResponse.Status;
-import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.sun.jersey.test.framework.AppDescriptor;
 import com.sun.jersey.test.framework.JerseyTest;
@@ -60,17 +60,33 @@ public class HelloResourceTest extends JerseyTest {
 	public void shoulReplyHello(){
 		String message = "Hello";
 		String name ="Nicolas";
-		when(helloServiceMock.saysHelloToSomeone("Nicolas")).thenReturn(new Hello(message, name));
+		Hello hello = new Hello(message, name);
+		when(helloServiceMock.saysHelloToSomeone("Nicolas")).thenReturn(hello);
 		
-		WebResource path = resource().path("hello").path(name);
-		ClientResponse response = path.get(ClientResponse.class);
-		assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
+		ClientResponse response = resource().path("hello").path(name).get(ClientResponse.class);
+		
+		verify(helloServiceMock).saysHelloToSomeone(name);
+		assertThat(response.getClientResponseStatus()).isEqualTo(Status.OK);
 		assertThat(response.getType()).isEqualTo(MediaType.APPLICATION_XML_TYPE);
-		Hello hello = response.getEntity(Hello.class);
-		assertThat(hello).isNotNull();
-		assertThat(hello.getMessage()).isEqualTo("Hello");
-		assertThat(hello.getName()).isEqualTo("Nicolas");
+		Hello entity = response.getEntity(Hello.class);
+		assertThat(entity).isNotNull().isEqualTo(hello);
 	}
+	
+	@Test
+	public void shouldSendHello(){
+		String message = "Hello";
+		String name ="Nicolas";
+		Hello hello = new Hello(message, name);
+		when(helloServiceMock.sendHello(name)).thenReturn(hello);
+
+		ClientResponse response = resource().path("hello").post(ClientResponse.class,name);
+
+		verify(helloServiceMock).sendHello(name);
+		assertThat(response.getClientResponseStatus()).isEqualTo(Status.CREATED);
+		assertThat(response.getType()).isEqualTo(MediaType.APPLICATION_XML_TYPE);
+		Hello entity = response.getEntity(Hello.class);
+		assertThat(entity).isNotNull().isEqualTo(hello);
+	}	
 	
 	private class GuiceTestConfig extends GuiceServletContextListener {
 		@Override
