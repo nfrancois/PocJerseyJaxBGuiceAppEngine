@@ -268,12 +268,12 @@
             <scope>test</scope>
         </dependency>		
 		
-		<!-- Dependencies for Guice support -->
+		<!-- Dependencies for  support -->
 		
 		<dependency>
 			<groupId>com.google.inject.extensions</groupId>
 			<artifactId>guice-servlet</artifactId>
-			<version>3.0-rc2</version>
+			<version>3.0</version>
 		</dependency>		
 
 		<!-- Google Guava -->
