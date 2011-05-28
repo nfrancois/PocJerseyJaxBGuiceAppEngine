@@ -16,10 +16,10 @@ import nfrancois.poc.jerseyjaxbguiceappengine.model.Hello;
 import nfrancois.poc.jerseyjaxbguiceappengine.service.HelloService;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import com.google.inject.servlet.RequestScoped;
 
 @Path("hello")
-@Singleton
+@RequestScoped
 @Produces(MediaType.APPLICATION_XML)
 public class HelloResource {
 	
